@@ -4,7 +4,7 @@ Add your route handlers in this directory.
 
 Example structure for a route file:
 
-```javascript
+```typescript
 const express = require('express');
 const router = express.Router();
 

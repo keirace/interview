@@ -3,12 +3,12 @@ let items = [];
 let nextId = 1;
 
 // GET all items
-exports.getAllItems = (req, res) => {
+export const getAllItems = (req, res) => {
   res.json(items);
 };
 
 // GET single item by ID
-exports.getItemById = (req, res) => {
+export const getItemById = (req, res) => {
   const item = items.find(i => i.id === parseInt(req.params.id));
   if (!item) {
     return res.status(404).json({
@@ -20,7 +20,7 @@ exports.getItemById = (req, res) => {
 };
 
 // POST create new item
-exports.createItem = (req, res) => {
+export const createItem = (req, res) => {
   const newItem = {
     id: nextId++,
     name: req.body.name,
@@ -33,7 +33,7 @@ exports.createItem = (req, res) => {
 };
 
 // PUT update item
-exports.updateItem = (req, res) => {
+export const updateItem = (req, res) => {
   const itemIndex = items.findIndex(i => i.id === parseInt(req.params.id));
   if (itemIndex === -1) {
     return res.status(404).json({
@@ -53,7 +53,7 @@ exports.updateItem = (req, res) => {
 };
 
 // DELETE item
-exports.deleteItem = (req, res) => {
+export const deleteItem = (req, res) => {
   const itemIndex = items.findIndex(i => i.id === parseInt(req.params.id));
   if (itemIndex === -1) {
     return res.status(404).json({

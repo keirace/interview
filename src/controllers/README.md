@@ -4,9 +4,9 @@ Add your controller logic in this directory.
 
 Example structure for a controller file:
 
-```javascript
+```typescript
 // Example controller structure
-exports.getAllTasks = async (req, res) => {
+export const getAllTasks = async (req: Request, res: Response) => {
   try {
     // Implement your logic here
     res.json({ message: 'Get all tasks' });
@@ -15,7 +15,7 @@ exports.getAllTasks = async (req, res) => {
   }
 };
 
-exports.createTask = async (req, res) => {
+export const createTask = async (req: Request, res: Response) => {
   try {
     // Implement your logic here
     res.status(201).json({ message: 'Task created' });
