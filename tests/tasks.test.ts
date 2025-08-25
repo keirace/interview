@@ -1,7 +1,6 @@
 import request from "supertest";
 import app from "../src/app";
 import { TaskStatus, TaskPriority } from "../src/models/task";
-import { tasks } from "../src/controllers/tasks";
 
 describe("Tasks API", () => {
 	let createdTaskId: string;
@@ -212,7 +211,6 @@ describe("Tasks API", () => {
 				tasksToUpdate.forEach((task: any) => {
 					task.status = TaskStatus.IN_PROGRESS;
 				});
-        console.log("tasksToUpdate:", tasksToUpdate);
 
 				// Update both tasks
 				const updateRes = await request(app).put("/tasks/batch").send(tasksToUpdate);
@@ -233,15 +231,15 @@ describe("Tasks API", () => {
       const tasksToDelete = res.body.tasks.map((task: any) => task.id);
 
       // Delete both tasks
-      const deleteRes = await request(app).delete("/tasks/batch").send(tasksToDelete);
+      const deleteRes = await request(app).delete("/tasks/batch").send({ ids: tasksToDelete });
 
       expect(deleteRes.statusCode).toBe(204);
 
       // Verify deletion
-      for (const id of tasksToDelete) {
-        const getRes = await request(app).get(`/tasks/${id}`);
-        expect(getRes.statusCode).toBe(404);
-      }
+      const getRes = await request(app).get("/tasks");
+      expect(getRes.statusCode).toBe(200);
+      expect(Array.isArray(getRes.body.tasks)).toBeTruthy();
+      expect(getRes.body.tasks.length).toBe(0);
     });
   });
 });
