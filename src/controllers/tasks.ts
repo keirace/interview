@@ -106,6 +106,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
 
 		task.update(req.body);
 		task.validate();
+		invalidateCache(req, res);
 		res.json(task);
 	} catch (error: any) {
 		res.status(400).json({ error: error.message });
@@ -129,6 +130,7 @@ export const deleteTask = async (req: Request, res: Response) => {
 	}
 
 	tasks.delete(taskId);
+	invalidateCache(req, res);
 	res.status(204).send();
 };
 
@@ -184,7 +186,7 @@ export const batchUpdateTasks = async (req: Request, res: Response): Promise<voi
 	try {
 		const updatedTasks: Task[] = [];
 		for (const taskData of req.body) {
-			const task = tasks.get(taskData.id);
+			const task = tasks.get(parseInt(taskData.id));
 			if (!task) {
 				res.status(404).json({ error: `Task with ID ${taskData.id} not found` });
 				return;
@@ -197,6 +199,7 @@ export const batchUpdateTasks = async (req: Request, res: Response): Promise<voi
 
 			task.validate();
 			updatedTasks.push(updatedTask);
+			invalidateCache(req, res);
 		}
 		// If all validations pass, update the tasks
 		updatedTasks.forEach((task) => tasks.set(task.id, task));
@@ -214,13 +217,13 @@ export const batchUpdateTasks = async (req: Request, res: Response): Promise<voi
  * @returns
  */
 export const batchDeleteTasks = async (req: Request, res: Response) => {
-	if (!Array.isArray(req.body)) {
+	if (!Array.isArray(req.body.ids)) {
 		return res.status(400).json({ error: "Request body must be an array of IDs" });
 	}
 
 	try {
 		const deletedTasks: Task[] = [];
-		for (const taskId of req.body) {
+		for (const taskId of req.body.ids) {
 			const id = parseInt(taskId);
 			if (!tasks.has(id)) {
 				return res.status(404).json({ error: `Task with ID ${id} not found` });
@@ -237,6 +240,7 @@ export const batchDeleteTasks = async (req: Request, res: Response) => {
 			}
 
 			deletedTasks.push(tasks.get(id)!);
+			invalidateCache(req, res);
 		}
 		deletedTasks.forEach((task) => tasks.delete(task.id));
 

@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import taskRoutes from "./routes/tasks";
 import { rateLimit } from "./middleware/rateLimit";
 import swaggerUi from 'swagger-ui-express';
-// import openapi from './docs'
+import { swaggerSpec } from "./docs/swagger";
 
 dotenv.config();
 
@@ -27,7 +27,8 @@ app.get("/", (req: Request, res: Response) => {
 // Tasks routes
 app.use("/tasks", taskRoutes);
 
-// app.use("/docs", swaggerUi.serve, swaggerUi.setup(/* openapi */));
+// Documentation route
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -21,10 +21,9 @@ export const cacheTasks = (req: Request, res: Response, next: NextFunction, ttl:
 };
 
 // Invalidate cache on task updates or deletions
-export const invalidateCache = (req: Request, res: Response, next: NextFunction) => {
+export const invalidateCache = (req: Request, res: Response) => {
 	if (["PUT", "PATCH", "DELETE"].includes(req.method) && req.path.startsWith("/tasks/")) {
 		const taskId = req.path.split("/")[2];
 		cache.delete(taskId);
 	}
-	next();
 };
