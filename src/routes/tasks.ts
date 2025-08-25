@@ -2,6 +2,7 @@ import express from "express";
 import { validateTask, validateStatusTransition } from "../middleware/validation";
 import * as taskController from "../controllers/tasks";
 import { cacheTasks } from "../middleware/cache";
+import { queueMiddleware as queue } from "../middleware/queue";
 
 const router = express.Router();
 
@@ -174,9 +175,9 @@ router.get("/", taskController.getTasks);
  *       404:
  *         description: Not Found
  */
-router.post("/batch", taskController.batchCreateTasks);
-router.put("/batch", taskController.batchUpdateTasks);
-router.delete("/batch", taskController.batchDeleteTasks);
+router.post("/batch", queue, taskController.batchCreateTasks);
+router.put("/batch", queue, taskController.batchUpdateTasks);
+router.delete("/batch", queue, taskController.batchDeleteTasks);
 
 // Get task by ID
 // Cached route

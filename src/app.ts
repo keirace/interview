@@ -15,7 +15,7 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(rateLimit({ capacity: 50 }));
+app.use(rateLimit({ capacity: process.env.RATE_LIMIT ? parseInt(process.env.RATE_LIMIT) : 50, windowMs: process.env.RATE_LIMIT_WINDOW_MS ? parseInt(process.env.RATE_LIMIT_WINDOW_MS) : 60000 }));
 
 // Welcome route
 app.get("/", (req: Request, res: Response) => {

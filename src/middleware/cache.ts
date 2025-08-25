@@ -1,16 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 
 /**
- * in-memory caching middleware for GET /tasks/:id requests
+ * In-memory caching middleware for GET /tasks/:id requests
  */
 export const cache = new Map<string, { value: any; timestamp: number }>();
+
+/**
+ * Caching middleware for task requests
+ * @param req - Express request object
+ * @param res - Express response object
+ * @param next - Express next middleware function
+ * @param ttl - Time to live for cache in milliseconds
+ * @returns 
+ */
 export const cacheTasks = (req: Request, res: Response, next: NextFunction, ttl: number = 5 * 60 * 1000) => {
 	if (req.method === "GET" && req.originalUrl.startsWith("/tasks/")) {
-		const taskId = req.originalUrl.split("/")[2];
-		console.log("Task ID for Caching:", taskId);
+		const taskId = req.originalUrl.split("/")[2]; // extract task ID from URL
 		// Check if response is already cached and still valid (5 minutes)
 		if (cache.has(taskId) && Date.now() < cache.get(taskId)!.timestamp) {
-			console.log("Cached Response:", JSON.parse(cache.get(taskId)?.value));
 			return res.json(JSON.parse(cache.get(taskId)?.value));
 		}
 		const originalSend = res.send.bind(res);

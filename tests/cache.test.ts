@@ -20,7 +20,6 @@ describe("Cache Middleware", () => {
 			});
 		expect(createRes.statusCode).toBe(201);
 		const taskId = createRes.body.id;
-        console.log("Created Task ID:", taskId);
 
 		// First GET request - should hit in-memory storage
 		const firstGetRes = await request(app).get(`/tasks/${taskId}`);
@@ -31,7 +30,6 @@ describe("Cache Middleware", () => {
 		// Second GET request - should hit the cache
 		const secondGetRes = await request(app).get(`/tasks/${taskId}`);
 		expect(secondGetRes.statusCode).toBe(200);
-        console.log("secondGetRes.body ", secondGetRes.body);
         expect(secondGetRes.body).toHaveProperty("id", taskId);
 
 		// Clean up - delete the created task
